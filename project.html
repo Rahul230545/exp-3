@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Platform Design Guide</title>
+    <style>
+        :root {
+            /* Light mode colors */
+            --primary-blue: #3B82F6;
+            --primary-teal: #14B8A6;
+            --dark-gray: #374151;
+            --light-gray: #F3F4F6;
+            --white: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-bg: #FFFFFF;
+            --bg-color: #F9FAFB;
+            --border-color: #E5E7EB;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-theme="dark"] {
+            --primary-blue: #60A5FA;
+            --primary-teal: #2DD4BF;
+            --dark-gray: #E5E7EB;
+            --light-gray: #1F2937;
+            --white: #111827;
+            --text-primary: #F9FAFB;
+            --text-secondary: #D1D5DB;
+            --card-bg: #1F2937;
+            --bg-color: #111827;
+            --border-color: #374151;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --gradient-hero: linear-gradient(135deg, #1e3a8a 0%, #581c87 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        nav a:hover {
+            color: var(--primary-blue);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            width: 250px;
+        }
+
+        .theme-toggle {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            background: var(--gradient-hero);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary-blue);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        section {
+            margin-bottom: 6rem;
+            scroll-margin-top: 100px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Overview Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Accordion Styles */
+        .accordion {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+        }
+
+        .accordion-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: var(--light-gray);
+        }
+
+        .accordion-header h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+
+        .accordion-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+            background: var(--card-bg);
+        }
+
+        .accordion.active .accordion-content {
+            max-height: 500px;
+            padding: 1.5rem;
+        }
+
+        /* Tabs Styles */
+        .tabs-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary-blue);
+        }
+
+        .tab-button.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-teal);
+        }
+
+        .info-item strong {
+            color: var(--primary-blue);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-blue);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .timeline-item h3 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .timeline-duration {
+            display: inline-block;
+            background: var(--primary-teal);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-content {
+            margin-top: 1rem;
+        }
+
+        .timeline-content h4 {
+            color: var(--text-primary);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .timeline-content li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-teal);
+            font-weight: bold;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: var(--light-gray);
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .pricing-card h3 {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin: 1rem 0;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .pricing-card li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section li {
+            padding: 0.5rem 0;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-blue);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Search Highlight */
+        .highlight {
+            background-color: #FEF08A;
+            color: #854D0E;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .header-container {
+                flex-wrap: wrap;
+            }
+
+            .search-input {
+                width: 150px;
+            }
+
+            .search-input:focus {
+                width: 180px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-nav {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+
+        .mt-2 {
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo">🚀 Platform Guide</a>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            <nav id="mainNav">
+                <a href="#overview">Overview</a>
+                <a href="#principles">Principles</a>
+                <a href="#platforms">Platforms</a>
+                <a href="#technology">Technology</a>
+                <a href="#methodology">Methodology</a>
+                <a href="#security">Security</a>
+                <a href="#monetization">Monetization</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search..." oninput="handleSearch()">
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Comprehensive Platform Design Guide</h1>
+            <p>From Concept to Implementation</p>
+            <a href="#overview" class="cta-button">Explore the Guide</a>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Overview Section -->
+        <section id="overview">
+            <h2 class="section-title">Platform Design Overview</h2>
+            <p class="section-subtitle">Essential components for building scalable, modern platforms</p>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Platform Design Principles</h3>
+                    <p>Core architectural principles including API-first design, microservices, and event-driven architecture for scalable solutions.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏗️</div>
+                    <h3>Platform Architectures</h3>
+                    <p>Explore various platform types from event management to healthcare, each with specific requirements and implementations.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💻</div>
+                    <h3>Technology Stack</h3>
+                    <p>Modern frontend frameworks, backend technologies, and cloud platforms that power today's digital ecosystems.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚙️</div>
+                    <h3>Development Methodology</h3>
+                    <p>Structured approach from discovery to post-launch, with clear phases, timelines, and deliverables.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Security &amp; Compliance</h3>
+                    <p>Zero trust architecture and compliance frameworks including SOC 2, PCI DSS, HIPAA, and FERPA standards.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <h3>Monetization Models</h3>
+                    <p>Revenue strategies from freemium to subscription, commission-based, and usage-based pricing models.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Principles Section -->
+        <section id="principles">
+            <h2 class="section-title">Platform Design Principles</h2>
+            <p class="section-subtitle">Fundamental architectural patterns for scalable platforms</p>
+            
+            <div class="accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <h3>🔌 API-First Architecture</h3>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Design APIs before implementing features, enabling multiple clients and integrations. This approach ensures consistency across web, mobile, and third-party applications while promoting parallel development and easier testing.</p>
+                    <ul>
+                        <li>Define API contracts early in the development process</li>
+                        <li>Enable parallel frontend and backend development</li>
+                        <li>Facilitate easier integration with external systems</li>
+                        <li>Improve testing and documentation practices</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <h3>🔧 Microservices Architecture</h3>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Break monoliths into independent services for better scalability and maintenance. Each service can be developed, deployed, and scaled independently, improving team autonomy and system resilience.</p>
+                    <ul>
+                        <li>Independent deployment and scaling of services</li>
+                        <li>Technology diversity across services</li>
+                        <li>Improved fault isolation and system resilience</li>
+                        <li>Enhanced team autonomy and productivity</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <h3>⚡ Event-Driven Architecture</h3>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Use asynchronous messaging for loose coupling and real-time processing. Events enable services to communicate without direct dependencies, improving system flexibility and responsiveness.</p>
+                    <ul>
+                        <li>Loose coupling between system components</li>
+                        <li>Real-time data processing and notifications</li>
+                        <li>Better scalability for high-volume operations</li>
+                        <li>Easier addition of new features and services</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <h3>🏢 Multi-tenant Architecture</h3>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Single codebase serving multiple customers with data isolation. This approach reduces infrastructure costs while maintaining security and customization for each tenant.</p>
+                    <ul>
+                        <li>Shared infrastructure with isolated data</li>
+                        <li>Cost-effective scaling for multiple customers</li>
+                        <li>Centralized updates and maintenance</li>
+                        <li>Customization options per tenant</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <h3>🌍 Data Sovereignty</h3>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Control over data location and compliance with regional regulations. Ensure data residency requirements are met while maintaining performance and accessibility.</p>
+                    <ul>
+                        <li>Compliance with regional data protection laws</li>
+                        <li>Geographic data storage options</li>
+                        <li>Data transfer controls and monitoring</li>
+                        <li>Customer control over data location</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <h3>📈 Horizontal Scalability</h3>
+                    <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Scale by adding more instances rather than increasing instance size. This approach provides better fault tolerance, cost efficiency, and unlimited growth potential.</p>
+                    <ul>
+                        <li>Add servers instead of upgrading existing ones</li>
+                        <li>Better fault tolerance and redundancy</li>
+                        <li>Cost-effective scaling strategies</li>
+                        <li>Unlimited growth potential</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform Types Section -->
+        <section id="platforms">
+            <h2 class="section-title">Platform Types &amp; Use Cases</h2>
+            <p class="section-subtitle">Explore different platform implementations and their characteristics</p>
+            
+            <div class="tabs-container">
+                <div class="tabs-nav">
+                    <button class="tab-button active" onclick="switchTab(event, 'event-management')">Event Management</button>
+                    <button class="tab-button" onclick="switchTab(event, 'campus-services')">Campus Services</button>
+                    <button class="tab-button" onclick="switchTab(event, 'developer-tools')">Developer Tools</button>
+                    <button class="tab-button" onclick="switchTab(event, 'ecommerce')">E-commerce</button>
+                    <button class="tab-button" onclick="switchTab(event, 'healthcare')">Healthcare</button>
+                    <button class="tab-button" onclick="switchTab(event, 'fintech')">FinTech</button>
+                </div>
+
+                <div id="event-management" class="tab-content active">
+                    <h3>Event Management Platform</h3>
+                    <div class="tab-grid">
+                        <div class="info-item">
+                            <strong>Target Users</strong>
+                            Event Organizers, Attendees
+                        </div>
+                        <div class="info-item">
+                            <strong>Key Features</strong>
+                            Event Creation, Registration, Ticketing, Check-in
+                        </div>
+                        <div class="info-item">
+                            <strong>Tech Stack</strong>
+                            React, Node.js, MongoDB, Stripe
+                        </div>
+                        <div class="info-item">
+                            <strong>Timeline</strong>
+                            6-8 months
+                        </div>
+                        <div class="info-item">
+                            <strong>Scalability</strong>
+                            High - Handles thousands of concurrent events
+                        </div>
+                    </div>
+                </div>
+
+                <div id="campus-services" class="tab-content">
+                    <h3>Campus Services Platform</h3>
+                    <div class="tab-grid">
+                        <div class="info-item">
+                            <strong>Target Users</strong>
+                            Students, Faculty, Administrators
+                        </div>
+                        <div class="info-item">
+                            <strong>Key Features</strong>
+                            Course Management, Resources, Communication, Grades
+                        </div>
+                        <div class="info-item">
+                            <strong>Tech Stack</strong>
+                            Angular, Django, PostgreSQL
+                        </div>
+                        <div class="info-item">
+                            <strong>Timeline</strong>
+                            8-12 months
+                        </div>
+                        <div class="info-item">
+                            <strong>Scalability</strong>
+                            Medium-High - Supports entire university systems
+                        </div>
+                    </div>
+                </div>
+
+                <div id="developer-tools" class="tab-content">
+                    <h3>Developer Tools Platform</h3>
+                    <div class="tab-grid">
+                        <div class="info-item">
+                            <strong>Target Users</strong>
+                            Engineers, DevOps Teams
+                        </div>
+                        <div class="info-item">
+                            <strong>Key Features</strong>
+                            API Management, CI/CD, Monitoring
+                        </div>
+                        <div class="info-item">
+                            <strong>Tech Stack</strong>
+                            Vue.js, Microservices, Kubernetes
+                        </div>
+                        <div class="info-item">
+                            <strong>Timeline</strong>
+                            10-18 months
+                        </div>
+                        <div class="info-item">
+                            <strong>Scalability</strong>
+                            Very High - Enterprise-grade infrastructure
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ecommerce" class="tab-content">
+                    <h3>E-commerce Platform</h3>
+                    <div class="tab-grid">
+                        <div class="info-item">
+                            <strong>Target Users</strong>
+                            Merchants, Buyers
+                        </div>
+                        <div class="info-item">
+                            <strong>Key Features</strong>
+                            Product Catalog, Payments, Order Management
+                        </div>
+                        <div class="info-item">
+                            <strong>Tech Stack</strong>
+                            React Native, Spring Boot, MySQL
+                        </div>
+                        <div class="info-item">
+                            <strong>Timeline</strong>
+                            4-6 months
+                        </div>
+                        <div class="info-item">
+                            <strong>Scalability</strong>
+                            High - Handles high transaction volumes
+                        </div>
+                    </div>
+                </div>
+
+                <div id="healthcare" class="tab-content">
+                    <h3>Healthcare Platform</h3>
+                    <div class="tab-grid">
+                        <div class="info-item">
+                            <strong>Target Users</strong>
+                            Providers, Patients, Insurers
+                        </div>
+                        <div class="info-item">
+                            <strong>Key Features</strong>
+                            EHR, Appointments, Telemedicine
+                        </div>
+                        <div class="info-item">
+                            <strong>Tech Stack</strong>
+                            HIPAA-compliant stack
+                        </div>
+                        <div class="info-item">
+                            <strong>Timeline</strong>
+                            12-18 months
+                        </div>
+                        <div class="info-item">
+                            <strong>Scalability</strong>
+                            Medium - Focus on security and compliance
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fintech" class="tab-content">
+                    <h3>FinTech Platform</h3>
+                    <div class="tab-grid">
+                        <div class="info-item">
+                            <strong>Target Users</strong>
+                            Financial Institutions, Users
+                        </div>
+                        <div class="info-item">
+                            <strong>Key Features</strong>
+                            Payments, KYC, Compliance
+                        </div>
+                        <div class="info-item">
+                            <strong>Tech Stack</strong>
+                            Secure microservices
+                        </div>
+                        <div class="info-item">
+                            <strong>Timeline</strong>
+                            8-15 months
+                        </div>
+                        <div class="info-item">
+                            <strong>Scalability</strong>
+                            Very High - Handles millions of transactions
+                        </div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Platform Type</th>
+                            <th>Timeline</th>
+                            <th>Scalability</th>
+                            <th>Primary Focus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Event Management</td>
+                            <td>6-8 months</td>
+                            <td>High</td>
+                            <td>User Experience</td>
+                        </tr>
+                        <tr>
+                            <td>Campus Services</td>
+                            <td>8-12 months</td>
+                            <td>Medium-High</td>
+                            <td>Integration</td>
+                        </tr>
+                        <tr>
+                            <td>Developer Tools</td>
+                            <td>10-18 months</td>
+                            <td>Very High</td>
+                            <td>Performance</td>
+                        </tr>
+                        <tr>
+                            <td>E-commerce</td>
+                            <td>4-6 months</td>
+                            <td>High</td>
+                            <td>Conversion</td>
+                        </tr>
+                        <tr>
+                            <td>Healthcare</td>
+                            <td>12-18 months</td>
+                            <td>Medium</td>
+                            <td>Compliance</td>
+                        </tr>
+                        <tr>
+                            <td>FinTech</td>
+                            <td>8-15 months</td>
+                            <td>Very High</td>
+                            <td>Security</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Technology Stack Section -->
+        <section id="technology">
+            <h2 class="section-title">Technology Stack</h2>
+            <p class="section-subtitle">Modern tools and frameworks powering digital platforms</p>
+            
+            <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Frontend Technologies</h3>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">⚛️</div>
+                    <h3>React</h3>
+                    <p>Component-based UI framework for building interactive user interfaces with a rich ecosystem and strong community support.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💚</div>
+                    <h3>Vue.js</h3>
+                    <p>Progressive JavaScript framework that's easy to adopt incrementally, perfect for both small projects and large applications.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🅰️</div>
+                    <h3>Angular</h3>
+                    <p>Enterprise application platform with comprehensive tooling, TypeScript support, and opinionated architecture.</p>
+                </div>
+            </div>
+
+            <h3 style="color: var(--primary-blue); margin: 3rem 0 1rem;">Backend Technologies</h3>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🟢</div>
+                    <h3>Node.js</h3>
+                    <p>JavaScript runtime for scalable applications with non-blocking I/O, perfect for real-time and data-intensive apps.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🐍</div>
+                    <h3>Django</h3>
+                    <p>Python web framework with batteries included, offering ORM, admin interface, and robust security features out of the box.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">☕</div>
+                    <h3>Spring Boot</h3>
+                    <p>Java framework for microservices with production-ready features, dependency injection, and enterprise integration.</p>
+                </div>
+            </div>
+
+            <h3 style="color: var(--primary-blue); margin: 3rem 0 1rem;">Cloud Platforms</h3>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">☁️</div>
+                    <h3>AWS</h3>
+                    <p>Comprehensive cloud platform with global reach, offering 200+ services from compute to AI/ML capabilities.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔷</div>
+                    <h3>Azure</h3>
+                    <p>Microsoft cloud with enterprise integration, hybrid cloud capabilities, and strong support for .NET technologies.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔴</div>
+                    <h3>GCP</h3>
+                    <p>Google cloud with ML and data capabilities, excellent for data analytics, machine learning, and containerized workloads.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Development Methodology Section -->
+        <section id="methodology">
+            <h2 class="section-title">Development Methodology</h2>
+            <p class="section-subtitle">Structured approach from concept to launch</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>Phase 1: Discovery &amp; Planning</h3>
+                    <span class="timeline-duration">2-4 weeks</span>
+                    <div class="timeline-content">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Market research and competitive analysis</li>
+                            <li>Requirements gathering and documentation</li>
+                            <li>User personas and journey mapping</li>
+                            <li>Feasibility study and risk assessment</li>
+                        </ul>
+                        <h4>Deliverables</h4>
+                        <ul>
+                            <li>Project charter and scope document</li>
+                            <li>Technical specifications and requirements</li>
+                            <li>Initial project timeline and budget</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>Phase 2: Strategic Planning</h3>
+                    <span class="timeline-duration">3-6 weeks</span>
+                    <div class="timeline-content">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Platform strategy and architecture design</li>
+                            <li>API design and documentation</li>
+                            <li>Technology stack selection</li>
+                            <li>Security architecture planning</li>
+                        </ul>
+                        <h4>Deliverables</h4>
+                        <ul>
+                            <li>API contracts and specifications</li>
+                            <li>Security and compliance plan</li>
+                            <li>Detailed architecture diagrams</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>Phase 3: MVP Development</h3>
+                    <span class="timeline-duration">12-16 weeks</span>
+                    <div class="timeline-content">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Core feature implementation</li>
+                            <li>Basic UI/UX development</li>
+                            <li>Unit and integration testing</li>
+                            <li>Initial performance optimization</li>
+                        </ul>
+                        <h4>Deliverables</h4>
+                        <ul>
+                            <li>Functional MVP with core features</li>
+                            <li>Technical documentation</li>
+                            <li>Test reports and quality metrics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>Phase 4: Beta Release</h3>
+                    <span class="timeline-duration">8-12 weeks</span>
+                    <div class="timeline-content">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Extended feature development</li>
+                            <li>User acceptance testing</li>
+                            <li>Feedback collection and analysis</li>
+                            <li>Performance tuning and optimization</li>
+                        </ul>
+                        <h4>Deliverables</h4>
+                        <ul>
+                            <li>Beta version with enhanced features</li>
+                            <li>User feedback reports</li>
+                            <li>Updated documentation</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>Phase 5: Production Launch</h3>
+                    <span class="timeline-duration">4-6 weeks</span>
+                    <div class="timeline-content">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Final testing and quality assurance</li>
+                            <li>Performance tuning and load testing</li>
+                            <li>Deployment to production environment</li>
+                            <li>Launch marketing and communications</li>
+                        </ul>
+                        <h4>Deliverables</h4>
+                        <ul>
+                            <li>Production-ready system</li>
+                            <li>Deployment documentation</li>
+                            <li>Launch reports and metrics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>Phase 6: Post-Launch Support</h3>
+                    <span class="timeline-duration">Ongoing</span>
+                    <div class="timeline-content">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>Continuous monitoring and alerting</li>
+                            <li>Bug fixes and patches</li>
+                            <li>Feature updates and enhancements</li>
+                            <li>User support and training</li>
+                        </ul>
+                        <h4>Deliverables</h4>
+                        <ul>
+                            <li>Stable, maintained platform</li>
+                            <li>Regular update releases</li>
+                            <li>Performance and usage reports</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Security & Compliance Section -->
+        <section id="security">
+            <h2 class="section-title">Security &amp; Compliance</h2>
+            <p class="section-subtitle">Protecting data and meeting regulatory requirements</p>
+            
+            <div class="card mb-2">
+                <div class="card-icon">🛡️</div>
+                <h3>Zero Trust Architecture</h3>
+                <p>Never trust, always verify. Implement comprehensive identity verification, least privilege access, and continuous monitoring for all users and systems regardless of location.</p>
+                <ul style="margin-top: 1rem; color: var(--text-secondary);">
+                    <li>Verify identity for every access request</li>
+                    <li>Implement least privilege access controls</li>
+                    <li>Continuous monitoring and logging</li>
+                    <li>Micro-segmentation of network resources</li>
+                </ul>
+            </div>
+
+            <h3 style="color: var(--primary-blue); margin: 2rem 0 1rem;">Compliance Frameworks</h3>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">✓</div>
+                    <h3>SOC 2</h3>
+                    <p><strong>Security and availability standards</strong></p>
+                    <p>Ensures service organizations manage data securely based on five trust principles: security, availability, processing integrity, confidentiality, and privacy.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💳</div>
+                    <h3>PCI DSS</h3>
+                    <p><strong>Payment card data security</strong></p>
+                    <p>Required for any organization handling credit card information, ensuring secure transmission, storage, and processing of payment data.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏥</div>
+                    <h3>HIPAA</h3>
+                    <p><strong>Healthcare data protection</strong></p>
+                    <p>Protects sensitive patient health information from disclosure without consent or knowledge, mandatory for healthcare platforms.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎓</div>
+                    <h3>FERPA</h3>
+                    <p><strong>Education records privacy</strong></p>
+                    <p>Protects student education records and gives parents/students rights to inspect and review records, essential for campus platforms.</p>
+                </div>
+            </div>
+
+            <h3 style="color: var(--primary-blue); margin: 2rem 0 1rem;">Security Best Practices</h3>
+            <div class="cards-grid">
+                <div class="info-item">
+                    <strong>🔐 Encryption</strong>
+                    End-to-end encryption for data in transit and at rest
+                </div>
+                <div class="info-item">
+                    <strong>🔑 Authentication</strong>
+                    Multi-factor authentication and SSO integration
+                </div>
+                <div class="info-item">
+                    <strong>📊 Monitoring</strong>
+                    Real-time security monitoring and incident response
+                </div>
+                <div class="info-item">
+                    <strong>🔄 Updates</strong>
+                    Regular security patches and dependency updates
+                </div>
+                <div class="info-item">
+                    <strong>🧪 Testing</strong>
+                    Penetration testing and security audits
+                </div>
+                <div class="info-item">
+                    <strong>📝 Documentation</strong>
+                    Security policies and incident response plans
+                </div>
+            </div>
+        </section>
+
+        <!-- Monetization Section -->
+        <section id="monetization">
+            <h2 class="section-title">Monetization Models</h2>
+            <p class="section-subtitle">Revenue strategies for sustainable platform growth</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>🎁 Freemium</h3>
+                    <div class="price">Free + Premium</div>
+                    <p>Basic free tier with paid premium features</p>
+                    <ul>
+                        <li>Free tier attracts users</li>
+                        <li>Premium features for power users</li>
+                        <li>Gradual revenue growth</li>
+                        <li>Large user base potential</li>
+                    </ul>
+                </div>
+                <div class="pricing-card">
+                    <h3>💼 Commission</h3>
+                    <div class="price">% per transaction</div>
+                    <p>Transaction-based revenue sharing</p>
+                    <ul>
+                        <li>No upfront costs for users</li>
+                        <li>Aligned with customer success</li>
+                        <li>Scales with platform usage</li>
+                        <li>Win-win business model</li>
+                    </ul>
+                </div>
+                <div class="pricing-card">
+                    <h3>📅 Subscription</h3>
+                    <div class="price">$X/month</div>
+                    <p>Recurring monthly/annual fees</p>
+                    <ul>
+                        <li>Predictable revenue stream</li>
+                        <li>Different tier options</li>
+                        <li>Long-term customer relationships</li>
+                        <li>Stable cash flow</li>
+                    </ul>
+                </div>
+                <div class="pricing-card">
+                    <h3>💸 Transaction Fees</h3>
+                    <div class="price">Fee per use</div>
+                    <p>Per-transaction pricing model</p>
+                    <ul>
+                        <li>Pay only for what you use</li>
+                        <li>No commitment required</li>
+                        <li>Transparent pricing</li>
+                        <li>Easy to understand</li>
+                    </ul>
+                </div>
+                <div class="pricing-card">
+                    <h3>📊 Usage-Based</h3>
+                    <div class="price">Pay as you go</div>
+                    <p>Pay for actual resource consumption</p>
+                    <ul>
+                        <li>Fair pricing model</li>
+                        <li>Scales with growth</li>
+                        <li>No wasted resources</li>
+                        <li>Flexible for all sizes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-2">
+                <h3 style="color: var(--primary-blue); margin-bottom: 1rem;">Choosing the Right Model</h3>
+                <p style="color: var(--text-secondary);">The best monetization strategy depends on your platform type, target audience, and value proposition. Many successful platforms use hybrid models combining multiple approaches:</p>
+                <ul style="margin-top: 1rem; color: var(--text-secondary);">
+                    <li><strong>SaaS platforms:</strong> Typically use subscription-based models with tiered pricing</li>
+                    <li><strong>Marketplaces:</strong> Often use commission-based models with optional premium features</li>
+                    <li><strong>Developer tools:</strong> Frequently employ usage-based pricing with free tiers</li>
+                    <li><strong>E-commerce platforms:</strong> Combine transaction fees with subscription plans</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About This Guide</h3>
+                <p style="color: var(--text-secondary);">A comprehensive resource for designing, building, and scaling modern digital platforms from concept to implementation.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#principles">Design Principles</a></li>
+                    <li><a href="#platforms">Platform Types</a></li>
+                    <li><a href="#technology">Technology Stack</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#methodology">Development Process</a></li>
+                    <li><a href="#security">Security &amp; Compliance</a></li>
+                    <li><a href="#monetization">Monetization</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Stay Updated</h3>
+                <p style="color: var(--text-secondary);">This guide is continuously updated with the latest best practices and industry standards.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Platform Design Guide. All rights reserved. Built with modern web technologies.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    const nav = document.getElementById('mainNav');
+                    nav.classList.remove('active');
+                }
+            });
+        });
+
+        // Accordion Toggle
+        function toggleAccordion(element) {
+            const isActive = element.classList.contains('active');
+            
+            // Close all accordions
+            document.querySelectorAll('.accordion').forEach(acc => {
+                acc.classList.remove('active');
+            });
+            
+            // Open clicked accordion if it wasn't active
+            if (!isActive) {
+                element.classList.add('active');
+            }
+        }
+
+        // Tab Switching
+        function switchTab(event, tabId) {
+            // Remove active class from all tabs and buttons
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab and button
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Search Functionality
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Remove previous highlights
+            document.querySelectorAll('.highlight').forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.textContent), el);
+                parent.normalize();
+            });
+            
+            if (searchTerm.length < 2) return;
+            
+            // Search in main content
+            const main = document.querySelector('main');
+            highlightText(main, searchTerm);
+            
+            // Scroll to first match
+            const firstHighlight = document.querySelector('.highlight');
+            if (firstHighlight) {
+                firstHighlight.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+
+        function highlightText(element, searchTerm) {
+            if (element.nodeType === Node.TEXT_NODE) {
+                const text = element.textContent;
+                const lowerText = text.toLowerCase();
+                const index = lowerText.indexOf(searchTerm);
+                
+                if (index !== -1) {
+                    const beforeText = text.substring(0, index);
+                    const matchText = text.substring(index, index + searchTerm.length);
+                    const afterText = text.substring(index + searchTerm.length);
+                    
+                    const fragment = document.createDocumentFragment();
+                    fragment.appendChild(document.createTextNode(beforeText));
+                    
+                    const highlightSpan = document.createElement('span');
+                    highlightSpan.className = 'highlight';
+                    highlightSpan.textContent = matchText;
+                    fragment.appendChild(highlightSpan);
+                    
+                    fragment.appendChild(document.createTextNode(afterText));
+                    
+                    element.parentNode.replaceChild(fragment, element);
+                }
+            } else if (element.nodeType === Node.ELEMENT_NODE && 
+                       element.tagName !== 'SCRIPT' && 
+                       element.tagName !== 'STYLE' &&
+                       !element.classList.contains('search-input')) {
+                Array.from(element.childNodes).forEach(child => {
+                    highlightText(child, searchTerm);
+                });
+            }
+        }
+
+        // Initialize theme based on user preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeToggle').textContent = '☀️';
+        }
+
+        // Add active state to nav links on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollY = window.pageYOffset;
+            
+            sections.forEach(section => {
+                const sectionHeight = section.offsetHeight;
+                const sectionTop = section.offsetTop - 150;
+                const sectionId = section.getAttribute('id');
+                const navLink = document.querySelector(`nav a[href="#${sectionId}"]`);
+                
+                if (navLink && scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    document.querySelectorAll('nav a').forEach(link => {
+                        link.style.borderBottom = 'none';
+                    });
+                    navLink.style.borderBottom = '2px solid var(--primary-blue)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
